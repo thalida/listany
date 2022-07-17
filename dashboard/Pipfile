@@ -8,6 +8,7 @@ django = "*"
 graphene-django = "*"
 dj-database-url = "*"
 psycopg2 = "*"
+django-extensions = "*"
 
 [dev-packages]
 
