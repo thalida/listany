@@ -197,10 +197,7 @@ class Link(models.Model):
 class Collection(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
-    slug = AutoSlugField(
-        unique=True,
-        populate_from=['name']
-    )
+    slug = AutoSlugField(populate_from=['name'])
     description = models.TextField(blank=True, null=True, default=None)
     created_by = models.ForeignKey(
         User,
@@ -215,3 +212,9 @@ class Collection(models.Model):
 
     class Meta:
         ordering = ('-created_at',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['slug', 'created_by'],
+                name='unique_collection_per_user'
+            )
+        ]
