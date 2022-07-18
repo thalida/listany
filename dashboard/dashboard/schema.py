@@ -17,6 +17,14 @@ class LinkType(DjangoObjectType):
         model = Link
         fields = "__all__"
 
+    def resolve_icon(self, info):
+        has_icon = self.icon and self.icon.name
+        return f"{self.icon.url}" if has_icon else None
+
+    def resolve_image(self, info):
+        has_image = self.image and self.image.name
+        return f"{self.image.url}" if has_image else None
+
 
 class CollectionType(DjangoObjectType):
     class Meta:
