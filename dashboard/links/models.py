@@ -4,6 +4,7 @@ from django_extensions.db.fields import AutoSlugField
 import requests
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
+from users.models import User
 
 
 class Link(models.Model):
@@ -35,7 +36,7 @@ class Link(models.Model):
         default=None
     )
     created_by = models.ForeignKey(
-        'auth.User',
+        User,
         related_name='links',
         on_delete=models.CASCADE,
     )
@@ -113,7 +114,7 @@ class Collection(models.Model):
     )
     description = models.TextField(blank=True, null=True, default=None)
     created_by = models.ForeignKey(
-        'auth.User',
+        User,
         related_name='link_collections',
         on_delete=models.CASCADE,
     )

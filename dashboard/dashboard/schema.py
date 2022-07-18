@@ -1,6 +1,15 @@
 import graphene
 from graphene_django import DjangoObjectType, DjangoListField
+from graphql_auth.schema import UserQuery, MeQuery
+from graphql_auth import mutations
 from links.models import Link, Collection
+
+
+class AuthMutation(graphene.ObjectType):
+    token_auth = mutations.ObtainJSONWebToken.Field()
+    verify_token = mutations.VerifyToken.Field()
+    refresh_token = mutations.RefreshToken.Field()
+    revoke_token = mutations.RevokeToken.Field()
 
 
 class LinkType(DjangoObjectType):
@@ -15,7 +24,7 @@ class CollectionType(DjangoObjectType):
         fields = "__all__"
 
 
-class Query(graphene.ObjectType):
+class Query(UserQuery, MeQuery, graphene.ObjectType):
     all_links = graphene.List(LinkType)
     link = graphene.Field(LinkType, link_id=graphene.Int())
 
@@ -76,7 +85,7 @@ class CreateLink(graphene.Mutation):
         return CreateLink(link=link)
 
 
-class Mutation(graphene.ObjectType):
+class Mutation(AuthMutation, graphene.ObjectType):
     create_link = CreateLink.Field()
 
 

@@ -14,11 +14,7 @@ import os
 from pathlib import Path
 
 # 3rd Party Packages
-import django
-from django.utils.encoding import force_str
 import dj_database_url
-
-django.utils.encoding.force_text = force_str
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -49,12 +45,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
 
     # 3rd party apps
     'django_extensions',
     'graphene_django',
+    'graphql_auth',
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
 
     # Dashboard Apps
+    'users.apps.UsersConfig',
     'links.apps.LinksConfig',
 ]
 
@@ -99,9 +99,34 @@ DATABASES = {
 }
 
 GRAPHENE = {
-    "SCHEMA": "dashboard.schema.schema"
+    "SCHEMA": "dashboard.schema.schema",
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
 
+AUTH_USER_MODEL = 'users.User'
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_auth.backends.GraphQLAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+GRAPHQL_AUTH = {
+    'LOGIN_ALLOWED_FIELDS': ['email', 'username'],
+    'SEND_ACTIVATION_EMAIL': False,
+}
+
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.ObtainJSONWebToken",
+        "graphql_auth.mutations.VerifyToken",
+        "graphql_auth.mutations.RefreshToken",
+        "graphql_auth.mutations.RevokeToken",
+    ],
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

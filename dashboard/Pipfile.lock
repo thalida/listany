@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "dedf8911bbbca0c43cef4382920a86b2f2b5c1f506e50ccc909a0b0542da3124"
+            "sha256": "68aacf2bb0ebbfd5872238e5e1f01f57e490d9a0731a7236d941ecef51f5622b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -44,7 +44,7 @@
                 "sha256:84c85a9078b11105f04f3036a9482ae10e4621616db313fe045dd24743a0820d",
                 "sha256:fe86415d55e84719d75f8b69414f6438ac3547d2078ab91b67e779ef69378412"
             ],
-            "markers": "python_version >= '3.6'",
+            "markers": "python_full_version >= '3.6.0'",
             "version": "==2022.6.15"
         },
         "charset-normalizer": {
@@ -52,7 +52,7 @@
                 "sha256:5189b6f22b01957427f35b6a08d9a0bc45b46d3788ef5a92e978433c7a35f8a5",
                 "sha256:575e708016ff3a5e3681541cb9d79312c416835686d054a23accb873b254f413"
             ],
-            "markers": "python_version >= '3.6'",
+            "markers": "python_full_version >= '3.6.0'",
             "version": "==2.1.0"
         },
         "dj-database-url": {
@@ -65,11 +65,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:a67a793ff6827fd373555537dca0da293a63a316fe34cb7f367f898ccca3c3ae",
-                "sha256:ca54ebedfcbc60d191391efbf02ba68fb52165b8bf6ccd6fe71f098cac1fe59e"
+                "sha256:677182ba8b5b285a4e072f3ac17ceee6aff1b5ce77fd173cc5b6a2d3dc022fcf",
+                "sha256:a8681e098fa60f7c33a4b628d6fcd3fe983a0939ff1301ecacac21d0b38bad56"
             ],
             "index": "pypi",
-            "version": "==4.0.6"
+            "version": "==3.2.14"
         },
         "django-extensions": {
             "hashes": [
@@ -78,6 +78,30 @@
             ],
             "index": "pypi",
             "version": "==3.2.0"
+        },
+        "django-filter": {
+            "hashes": [
+                "sha256:ed429e34760127e3520a67f415bec4c905d4649fbe45d0d6da37e6ff5e0287eb",
+                "sha256:ed473b76e84f7e83b2511bb2050c3efb36d135207d0128dfe3ae4b36e3594ba5"
+            ],
+            "markers": "python_version >= '3.7'",
+            "version": "==22.1"
+        },
+        "django-graphql-auth": {
+            "hashes": [
+                "sha256:1e4e326ad2f71935e5bb9c40e3698bc57d3ba1ebdcd4d4a91e2b7ff4d65996a9",
+                "sha256:f60a8d1c1497d97f74193ab5b8475b6c2432840bb383e641dd1a78ff909490ee"
+            ],
+            "index": "pypi",
+            "version": "==0.3.16"
+        },
+        "django-graphql-jwt": {
+            "hashes": [
+                "sha256:bcf0882a492e2148cba7cba3c39cf57834f736a2c289b66852239faf9b59b61e",
+                "sha256:c9c611d98510b57146c21484478eae793249553af3766a593e8f25ce73d3255a"
+            ],
+            "index": "pypi",
+            "version": "==0.3.0"
         },
         "graphene": {
             "hashes": [
@@ -139,6 +163,20 @@
             "index": "pypi",
             "version": "==2.9.3"
         },
+        "pyjwt": {
+            "hashes": [
+                "sha256:5c6eca3c2940464d106b99ba83b00c6add741c9becaec087fb7ccdefea71350e",
+                "sha256:8d59a976fb773f3e6a39c85636357c4f0e242707394cadadd9814f5cbaa20e96"
+            ],
+            "version": "==1.7.1"
+        },
+        "pytz": {
+            "hashes": [
+                "sha256:1e760e2fe6a8163bc0b3d9a19c4f84342afa0a2affebfaa84b01b978a02ecaa7",
+                "sha256:e68985985296d9a66a881eb3193b0906246245294a881e7c8afe623866ac6a5c"
+            ],
+            "version": "==2022.1"
+        },
         "requests": {
             "hashes": [
                 "sha256:7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983",
@@ -175,7 +213,7 @@
                 "sha256:3b2503d3c7084a42b1ebd08116e5f81aadfaea95863628c80a3b774a11b7c759",
                 "sha256:fc53893b3da2c33de295667a0e19f078c14bf86544af307354de5fcf12a3f30d"
             ],
-            "markers": "python_version >= '3.6'",
+            "markers": "python_full_version >= '3.6.0'",
             "version": "==2.3.2.post1"
         },
         "sqlparse": {

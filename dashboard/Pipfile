@@ -4,13 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
+django = "<4.0"
 graphene-django = "*"
 dj-database-url = "*"
 psycopg2 = "*"
 django-extensions = "*"
 requests = "*"
 beautifulsoup4 = "*"
+django-graphql-auth = "*"
+django-graphql-jwt = "==0.3.0"
 
 [dev-packages]
 
