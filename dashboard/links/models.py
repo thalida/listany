@@ -1,10 +1,39 @@
+import os
 import uuid
+import urllib
+from django.core import files
+from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 from django_extensions.db.fields import AutoSlugField
 import requests
-from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 from users.models import User
+
+
+def download_file_from_url(url, file_name):
+    # Stream the image from the url
+    try:
+        request = requests.get(url, stream=True)
+    except requests.exceptions.RequestException as error:
+        raise Exception(error)
+
+    if request.status_code != requests.codes.ok:
+        return None
+
+    # Create a temporary file
+    temp_file = NamedTemporaryFile(delete=True)
+
+    # Read the streamed image in sections
+    for block in request.iter_content(1024 * 8):
+        # If no more file then stop
+        if not block:
+            break
+
+        # Write image block to temporary file
+        temp_file.write(block)
+
+    temp_file.flush()
+    return files.File(temp_file, name=file_name)
 
 
 class Link(models.Model):
@@ -21,8 +50,18 @@ class Link(models.Model):
         null=True,
         default=None
     )
-    icon = models.URLField(blank=True, null=True, default=None)
-    image = models.URLField(blank=True, null=True, default=None)
+    icon = models.ImageField(
+        upload_to='links/icons/',
+        blank=True,
+        null=True,
+        default=None
+    )
+    image = models.ImageField(
+        upload_to='links/images/',
+        blank=True,
+        null=True,
+        default=None
+    )
     link_type = models.CharField(
         max_length=255,
         blank=True,
@@ -63,15 +102,35 @@ class Link(models.Model):
             response = requests.get(self.url)
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            url_parts = urlparse(self.url)
+            url_parts = urllib.parse.urlparse(self.url)
             base_url = f'{url_parts.scheme}://{url_parts.netloc}'
             if url_parts.port:
                 base_url = f'{base_url}:{url_parts.port}'
 
-            if self.icon is None:
+            if self.icon.name is None:
                 icon = soup.find("link", rel="shortcut icon")
-                print(icon.get('href'))
-                self.icon = f"{base_url}{icon.get('href')}" if icon else None
+                if icon:
+                    icon_url = urllib.parse.urljoin(self.url, icon.get('href'))
+                    icon_path = urllib.parse.urlparse(icon_url).path
+                    icon_ext = os.path.splitext(icon_path)[1]
+                    self.icon = download_file_from_url(
+                        icon_url,
+                        f"{str(self.id)}{icon_ext}"
+                    )
+
+            if self.image.name is None:
+                image = soup.find("meta", property="og:image")
+                if image:
+                    image_url = urllib.parse.urljoin(
+                        self.url,
+                        image.get('content')
+                    )
+                    image_path = urllib.parse.urlparse(image_url).path
+                    image_ext = os.path.splitext(image_path)[1]
+                    self.image = download_file_from_url(
+                        image_url,
+                        f"{str(self.id)}{image_ext}"
+                    )
 
             if self.title is None:
                 og_title = soup.find("meta", property="og:title")
@@ -87,10 +146,6 @@ class Link(models.Model):
                 else:
                     meta_desc = soup.find("meta", property="description")
                     self.description = meta_desc.get('content')
-
-            if self.image is None:
-                image = soup.find("meta", property="og:image")
-                self.image = image.get('content') if image else None
 
             if self.link_type is None:
                 og_type = soup.find("meta", property="og:type")
