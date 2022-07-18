@@ -63,6 +63,11 @@ class Link(models.Model):
         null=True,
         default=None
     )
+    image_alt = models.TextField(
+        blank=True,
+        null=True,
+        default=None
+    )
     link_type = models.CharField(
         max_length=255,
         blank=True,
@@ -142,6 +147,10 @@ class Link(models.Model):
                             image_url,
                             f"{str(self.id)}{image_ext}"
                         )
+
+            if self.image_alt is None or len(self.image_alt) == 0:
+                alt = soup.find("meta", property="og:image:alt")
+                self.image_alt = alt.get('content') if alt else None
 
             if self.title is None:
                 og_title = soup.find("meta", property="og:title")
