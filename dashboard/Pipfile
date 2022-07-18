@@ -9,6 +9,8 @@ graphene-django = "*"
 dj-database-url = "*"
 psycopg2 = "*"
 django-extensions = "*"
+requests = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 

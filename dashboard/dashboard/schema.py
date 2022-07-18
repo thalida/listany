@@ -1,4 +1,3 @@
-# cookbook/schema.py
 import graphene
 from graphene_django import DjangoObjectType, DjangoListField
 from links.models import Link, Collection
@@ -14,11 +13,6 @@ class CollectionType(DjangoObjectType):
     class Meta:
         model = Collection
         fields = "__all__"
-
-
-class LinkInput(graphene.InputObjectType):
-    id = graphene.ID()
-    url = graphene.String()
 
 
 class Query(graphene.ObjectType):
@@ -51,4 +45,39 @@ class Query(graphene.ObjectType):
         return Collection.objects.prefetch_related("links").get(slug=slug)
 
 
-schema = graphene.Schema(query=Query)
+class LinkInput(graphene.InputObjectType):
+    id = graphene.ID()
+    url = graphene.String()
+    title = graphene.String(default_value=None)
+    description = graphene.String(default_value=None)
+    image = graphene.String(default_value=None)
+    collections = graphene.List(graphene.ID, default_value=[])
+    created_by = graphene.ID()
+
+
+class CreateLink(graphene.Mutation):
+    link = graphene.Field(LinkType)
+
+    class Arguments:
+        link_data = LinkInput(required=True)
+
+    @staticmethod
+    def mutate(self, info, link_data):
+        link = Link.objects.create(
+            url=link_data.url,
+            title=link_data.title,
+            description=link_data.description,
+            image=link_data.image,
+            created_by=info.context.user,
+        )
+        link.collections.set(link_data.collections)
+        link.save()
+
+        return CreateLink(link=link)
+
+
+class Mutation(graphene.ObjectType):
+    create_link = CreateLink.Field()
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
