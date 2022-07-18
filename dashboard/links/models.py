@@ -1,6 +1,7 @@
 import os
 import uuid
 import urllib
+import urllib.robotparser
 from django.core import files
 from django.core.files.temp import NamedTemporaryFile
 from django.db import models
@@ -98,6 +99,14 @@ class Link(models.Model):
         if self.created_at is not None:
             return
 
+        robotfile_parser = urllib.robotparser.RobotFileParser()
+        robotfile_url = urllib.parse.urljoin(self.url, '/robots.txt')
+        robotfile_parser.set_url(robotfile_url)
+        robotfile_parser.read()
+
+        if not robotfile_parser.can_fetch('*', self.url):
+            return
+
         try:
             response = requests.get(self.url)
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -111,12 +120,13 @@ class Link(models.Model):
                 icon = soup.find("link", rel="shortcut icon")
                 if icon:
                     icon_url = urllib.parse.urljoin(self.url, icon.get('href'))
-                    icon_path = urllib.parse.urlparse(icon_url).path
-                    icon_ext = os.path.splitext(icon_path)[1]
-                    self.icon = download_file_from_url(
-                        icon_url,
-                        f"{str(self.id)}{icon_ext}"
-                    )
+                    if robotfile_parser.can_fetch('*', icon_url):
+                        icon_path = urllib.parse.urlparse(icon_url).path
+                        icon_ext = os.path.splitext(icon_path)[1]
+                        self.icon = download_file_from_url(
+                            icon_url,
+                            f"{str(self.id)}{icon_ext}"
+                        )
 
             if self.image.name is None:
                 image = soup.find("meta", property="og:image")
@@ -125,12 +135,13 @@ class Link(models.Model):
                         self.url,
                         image.get('content')
                     )
-                    image_path = urllib.parse.urlparse(image_url).path
-                    image_ext = os.path.splitext(image_path)[1]
-                    self.image = download_file_from_url(
-                        image_url,
-                        f"{str(self.id)}{image_ext}"
-                    )
+                    if robotfile_parser.can_fetch('*', image_url):
+                        image_path = urllib.parse.urlparse(image_url).path
+                        image_ext = os.path.splitext(image_path)[1]
+                        self.image = download_file_from_url(
+                            image_url,
+                            f"{str(self.id)}{image_ext}"
+                        )
 
             if self.title is None:
                 og_title = soup.find("meta", property="og:title")
