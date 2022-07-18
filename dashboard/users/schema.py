@@ -10,7 +10,7 @@ class MyUserNode(DjangoObjectType):
     class Meta():
         model = get_user_model()
         filter_fields = ["username"]
-        exclude = ["email", "secondaryEmail", "password"]
+        exclude = ["email", "password"]
         interfaces = (graphene.relay.Node, )
 
     pk = graphene.UUID()

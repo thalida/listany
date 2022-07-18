@@ -1,18 +1,12 @@
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-from links.models import Link, Collection
+from links.models import Link, LinkMeta, Collection
 
 
-class LinkNode(DjangoObjectType):
-    pk = graphene.Field(type=graphene.UUID, source='id')
-
+class LinkMetaNode(DjangoObjectType):
     class Meta:
-        model = Link
-        filter_fields = {
-            'url': ['exact', 'icontains', 'istartswith'],
-            'collections': ['exact', 'icontains', 'istartswith'],
-        }
+        model = LinkMeta
         interfaces = (graphene.relay.Node, )
 
     def resolve_icon(self, info):
@@ -22,6 +16,19 @@ class LinkNode(DjangoObjectType):
     def resolve_image(self, info):
         has_image = self.image and self.image.name
         return f"{self.image.url}" if has_image else None
+
+
+class LinkNode(DjangoObjectType):
+    pk = graphene.Field(type=graphene.UUID, source='id')
+    link_meta = graphene.Field(LinkMetaNode)
+
+    class Meta:
+        model = Link
+        filter_fields = {
+            'url': ['exact', 'icontains', 'istartswith'],
+            'collections': ['exact', 'icontains', 'istartswith'],
+        }
+        interfaces = (graphene.relay.Node, )
 
 
 class CollectionNode(DjangoObjectType):
@@ -45,17 +52,13 @@ class CreateLink(graphene.relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **data):
-        link = Link.objects.create(
+        link = Link(
             url=data.get('url'),
             created_by=info.context.user,
         )
-        # link.collections.set(Collection.objects.filter(
-        #     id__in=data.get('collections')
-        # ))
-        for collection_id in data.get('collections'):
-            collection = Collection.objects.get(id=collection_id)
-            link.collections.add(collection)
-
+        link.collections.set(Collection.objects.filter(
+            id__in=data.get('collections')
+        ))
         link.save()
 
         return CreateLink(link=link)
@@ -94,7 +97,6 @@ class CreateCollection(graphene.relay.ClientIDMutation):
             description=data.get('description'),
             created_by=info.context.user,
         )
-        collection.save()
 
         return CreateCollection(collection=collection)
 
