@@ -61,6 +61,25 @@ class CreateLink(graphene.relay.ClientIDMutation):
         return CreateLink(link=link)
 
 
+class DeleteLink(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID()
+
+    link = graphene.Field(LinkNode)
+    success = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **data):
+        link = Link.objects.get(
+            pk=data.get('id'),
+            created_by=info.context.user
+        )
+
+        link.delete()
+
+        return DeleteLink(link=link, success=True)
+
+
 class CreateCollection(graphene.relay.ClientIDMutation):
     class Input:
         name = graphene.String(required=True)
@@ -80,6 +99,25 @@ class CreateCollection(graphene.relay.ClientIDMutation):
         return CreateCollection(collection=collection)
 
 
+class DeleteCollection(graphene.relay.ClientIDMutation):
+    class Input:
+        id = graphene.ID()
+
+    collection = graphene.Field(CollectionNode)
+    success = graphene.Boolean()
+
+    @classmethod
+    def mutate_and_get_payload(cls, root, info, **data):
+        collection = Collection.objects.get(
+            pk=data.get('id'),
+            created_by=info.context.user
+        )
+
+        collection.delete()
+
+        return DeleteCollection(collection=collection, success=True)
+
+
 class LinkQuery(graphene.ObjectType):
     link = graphene.relay.Node.Field(LinkNode)
     all_links = DjangoFilterConnectionField(LinkNode)
@@ -90,4 +128,7 @@ class LinkQuery(graphene.ObjectType):
 
 class LinkMutation(graphene.ObjectType):
     create_link = CreateLink.Field()
+    delete_link = DeleteLink.Field()
+
     create_collection = CreateCollection.Field()
+    delete_collection = DeleteCollection.Field()
