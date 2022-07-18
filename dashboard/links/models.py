@@ -122,7 +122,21 @@ class Link(models.Model):
                 base_url = f'{base_url}:{url_parts.port}'
 
             if self.icon.name is None:
-                icon = soup.find("link", rel="shortcut icon")
+                all_icons = soup.find_all('link', rel='icon')
+                icon = None
+                for tmp_icon in all_icons:
+                    if tmp_icon.get('href') is None:
+                        continue
+
+                    if icon is None:
+                        icon = tmp_icon
+                        continue
+
+                    icon_size = icon.get('sizes', '16x16').split('x')
+                    tmp_icon_size = tmp_icon.get('sizes', '16x16').split('x')
+                    if int(icon_size[0]) < int(tmp_icon_size[0]):
+                        icon = tmp_icon
+
                 if icon:
                     icon_url = urllib.parse.urljoin(self.url, icon.get('href'))
                     if robotfile_parser.can_fetch('*', icon_url):
