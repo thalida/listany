@@ -2,6 +2,7 @@ import os
 import uuid
 import urllib
 import urllib.robotparser
+import datetime
 from django.core import files
 from django.core.files.temp import NamedTemporaryFile
 from django.db import models
@@ -85,6 +86,12 @@ class Link(models.Model):
         related_name='links',
         on_delete=models.CASCADE,
     )
+
+    robot_fetch_meta_allowed = models.BooleanField(default=True)
+    robot_fetch_icon_allowed = models.BooleanField(default=True)
+    robot_fetch_image_allowed = models.BooleanField(default=True)
+    robot_fetched_at = models.DateTimeField(blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -110,11 +117,16 @@ class Link(models.Model):
         robotfile_parser.read()
 
         if not robotfile_parser.can_fetch('*', self.url):
+            self.robot_fetch_meta_allowed = False
+            self.robot_fetch_icon_allowed = False
+            self.robot_fetch_image_allowed = False
             return
 
         try:
             response = requests.get(self.url)
             soup = BeautifulSoup(response.text, 'html.parser')
+
+            self.robot_fetched_at = datetime.datetime.now()
 
             url_parts = urllib.parse.urlparse(self.url)
             base_url = f'{url_parts.scheme}://{url_parts.netloc}'
@@ -146,6 +158,8 @@ class Link(models.Model):
                             icon_url,
                             f"{str(self.id)}{icon_ext}"
                         )
+                    else:
+                        self.robot_fetch_icon_allowed = False
 
             if self.image.name is None:
                 image = soup.find("meta", property="og:image")
@@ -161,6 +175,8 @@ class Link(models.Model):
                             image_url,
                             f"{str(self.id)}{image_ext}"
                         )
+                    else:
+                        self.robot_fetch_image_allowed = False
 
             if self.image_alt is None or len(self.image_alt) == 0:
                 alt = soup.find("meta", property="og:image:alt")
