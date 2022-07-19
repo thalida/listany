@@ -44,7 +44,7 @@ class Link(models.Model):
     def save_metadata(self):
         url_metadata = Metadata(
             self.url,
-            get_filename=lambda: f"{self.id}-{self.created_by.id}"
+            get_filename=lambda: f"{self.id}__{self.created_by.id}"
         )
         url_metadata.fetch()
         LinkMeta.objects.update_or_create(

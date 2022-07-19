@@ -107,7 +107,7 @@ class Metadata:
         except Exception as error:
             raise error
 
-    def get_icon(self):
+    def get_icon_url(self):
         icon = None
         all_icons = self.soup.find_all('link', rel='icon')
         for tmp_icon in all_icons:
@@ -126,7 +126,14 @@ class Metadata:
         if icon is None:
             return
 
-        icon_url = urllib.parse.urljoin(self.url, icon.get('href'))
+        return icon.get('href')
+
+    def get_icon(self):
+        raw_icon_url = self.get_icon_url()
+        if raw_icon_url is None:
+            return
+
+        icon_url = urllib.parse.urljoin(self.url, raw_icon_url)
 
         if not self.can_fetch(icon_url, namespace='icon'):
             return
@@ -134,15 +141,27 @@ class Metadata:
         icon_filename = self.get_filepath_from_url(icon_url)
         return self.download_file_from_url(icon_url, icon_filename)
 
-    def get_image(self):
+    def get_image_url(self):
         image = self.soup.find("meta", property="og:image")
-        if image is None:
+        if image:
+            return image.get('content')
+
+        image = self.soup.find("meta", property="og:image:url")
+        if image:
+            return image.get('content')
+
+        image = self.soup.find("meta", property="og:image:secure_url")
+        if image:
+            return image.get('content')
+
+        return None
+
+    def get_image(self):
+        raw_image_url = self.get_image_url()
+        if raw_image_url is None:
             return
 
-        image_url = urllib.parse.urljoin(
-            self.url,
-            image.get('content')
-        )
+        image_url = urllib.parse.urljoin(self.url, raw_image_url)
 
         if not self.can_fetch(image_url, namespace='image'):
             return
