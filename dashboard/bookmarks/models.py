@@ -1,6 +1,3 @@
-
-from email.mime import image
-from turtle import title
 import uuid
 from django.db import models
 from django_extensions.db.fields import AutoSlugField
@@ -8,59 +5,45 @@ from users.models import User
 from .metadata import Metadata
 
 
-class Link(models.Model):
+class Bookmark(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    url = models.URLField()
+    link = models.ForeignKey(
+        'Link',
+        related_name='bookmarks',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
     collections = models.ManyToManyField(
         'Collection',
-        related_name='links',
+        related_name='bookmarks',
         blank=True,
         default=None
     )
     created_by = models.ForeignKey(
         User,
-        related_name='links',
+        related_name='bookmarks',
         on_delete=models.CASCADE,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.url
+        return f"{self.created_by.username}'s {self.link.url}"
 
     class Meta:
         ordering = ('-created_at',)
         constraints = [
             models.UniqueConstraint(
-                fields=['url', 'created_by'],
-                name='unique_url_per_user'
+                fields=['link', 'created_by'],
+                name='unique_link_per_user'
             )
         ]
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.save_metadata()
 
-    def save_metadata(self):
-        url_metadata = Metadata(
-            self.url,
-            get_filename=lambda: f"{self.id}__{self.created_by.id}"
-        )
-        url_metadata.fetch()
-        LinkMeta.objects.update_or_create(
-            link=self,
-            **url_metadata.metadata,
-            **url_metadata.fetch_stats,
-        )
-
-
-class LinkMeta(models.Model):
+class Link(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    link = models.OneToOneField(
-        Link,
-        related_name='link_meta',
-        on_delete=models.CASCADE,
-    )
+    url = models.URLField(unique=True)
     title = models.CharField(
         max_length=255,
         blank=True,
@@ -95,7 +78,6 @@ class LinkMeta(models.Model):
         null=True,
         default=None
     )
-
     is_fetch_allowed = models.BooleanField(
         blank=True,
         null=True,
@@ -120,8 +102,31 @@ class LinkMeta(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.url
+
     class Meta:
         pass
+
+    def save(self, *args, **kwargs):
+        if self.created_at is None:
+            url_metadata = Metadata(
+                self.url,
+                get_filename=lambda: f"{self.id}"
+            )
+            url_metadata.fetch()
+            self.title = url_metadata.metadata["title"]
+            self.description = url_metadata.metadata["description"]
+            self.icon = url_metadata.metadata["icon"]
+            self.image = url_metadata.metadata["image"]
+            self.image_alt = url_metadata.metadata["image_alt"]
+            self.link_type = url_metadata.metadata["link_type"]
+            self.is_fetch_allowed = url_metadata.fetch_stats["is_fetch_allowed"]
+            self.is_fetch_icon_allowed = url_metadata.fetch_stats["is_fetch_icon_allowed"]
+            self.is_fetch_image_allowed = url_metadata.fetch_stats["is_fetch_image_allowed"]
+            self.last_fetched_at = url_metadata.fetch_stats["last_fetched_at"]
+
+        super().save(*args, **kwargs)
 
 
 class Collection(models.Model):
@@ -131,7 +136,7 @@ class Collection(models.Model):
     description = models.TextField(blank=True, null=True, default=None)
     created_by = models.ForeignKey(
         User,
-        related_name='link_collections',
+        related_name='collections',
         on_delete=models.CASCADE,
     )
     created_at = models.DateTimeField(auto_now_add=True)

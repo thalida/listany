@@ -66,7 +66,6 @@ class Metadata:
 
     def can_fetch(self, url, namespace=None):
         robotfile_url = urllib.parse.urljoin(self.url, '/robots.txt')
-
         parser = robots.RobotsParser.from_uri(robotfile_url)
         is_fetchable = parser.can_fetch("*", url)
 

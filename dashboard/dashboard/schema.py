@@ -1,13 +1,13 @@
 import graphene
 from users.schema import UserQuery, UserMutation
-from links.schema import LinkQuery, LinkMutation
+from bookmarks.schema import BookmarkQuery, BookmarkMutation
 
 
-class Query(UserQuery, LinkQuery, graphene.ObjectType):
+class Query(UserQuery, BookmarkQuery, graphene.ObjectType):
     pass
 
 
-class Mutation(UserMutation, LinkMutation, graphene.ObjectType):
+class Mutation(UserMutation, BookmarkMutation, graphene.ObjectType):
     pass
 
 

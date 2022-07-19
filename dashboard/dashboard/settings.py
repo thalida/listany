@@ -55,7 +55,7 @@ INSTALLED_APPS = [
 
     # Dashboard Apps
     'users.apps.UsersConfig',
-    'links.apps.LinksConfig',
+    'bookmarks.apps.BookmarksConfig',
 ]
 
 MIDDLEWARE = [

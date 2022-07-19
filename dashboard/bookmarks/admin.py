@@ -1,6 +1,6 @@
 from django.contrib import admin
-from links.models import Link, LinkMeta, Collection
+from bookmarks.models import Bookmark, Link, Collection
 
+admin.site.register(Bookmark)
 admin.site.register(Link)
-admin.site.register(LinkMeta)
 admin.site.register(Collection)

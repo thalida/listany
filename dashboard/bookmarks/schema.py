@@ -1,12 +1,29 @@
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-from links.models import Link, LinkMeta, Collection
+from bookmarks.models import Bookmark, Link, Collection
 
 
-class LinkMetaNode(DjangoObjectType):
+class BookmarkNode(DjangoObjectType):
+    pk = graphene.Field(type=graphene.UUID, source='id')
+
     class Meta:
-        model = LinkMeta
+        model = Bookmark
+        filter_fields = {
+            'link__url': ['exact', 'icontains', 'istartswith'],
+            'collections__name': ['exact', 'icontains', 'istartswith'],
+        }
+        interfaces = (graphene.relay.Node, )
+
+
+class LinkNode(DjangoObjectType):
+    pk = graphene.Field(type=graphene.UUID, source='id')
+
+    class Meta:
+        model = Link
+        filter_fields = {
+            'url': ['exact', 'icontains', 'istartswith'],
+        }
         interfaces = (graphene.relay.Node, )
 
     def resolve_icon(self, info):
@@ -16,19 +33,6 @@ class LinkMetaNode(DjangoObjectType):
     def resolve_image(self, info):
         has_image = self.image and self.image.name
         return f"{self.image.url}" if has_image else None
-
-
-class LinkNode(DjangoObjectType):
-    pk = graphene.Field(type=graphene.UUID, source='id')
-    link_meta = graphene.Field(LinkMetaNode)
-
-    class Meta:
-        model = Link
-        filter_fields = {
-            'url': ['exact', 'icontains', 'istartswith'],
-            'collections': ['exact', 'icontains', 'istartswith'],
-        }
-        interfaces = (graphene.relay.Node, )
 
 
 class CollectionNode(DjangoObjectType):
@@ -43,44 +47,46 @@ class CollectionNode(DjangoObjectType):
         interfaces = (graphene.relay.Node, )
 
 
-class CreateLink(graphene.relay.ClientIDMutation):
+class CreateBookmark(graphene.relay.ClientIDMutation):
     class Input:
         url = graphene.String(required=True)
         collections = graphene.List(graphene.ID, default_value=[])
 
-    link = graphene.Field(LinkNode)
+    bookmark = graphene.Field(BookmarkNode)
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **data):
-        link = Link(
-            url=data.get('url'),
+        link, _ = Link.objects.get_or_create(url=data.get('url'))
+        bookmark = Bookmark(
             created_by=info.context.user,
+            link=link,
         )
-        link.collections.set(Collection.objects.filter(
+        collections = Collection.objects.filter(
             id__in=data.get('collections')
-        ))
-        link.save()
+        )
+        bookmark.collections.set(collections)
+        bookmark.save()
 
-        return CreateLink(link=link)
+        return CreateBookmark(bookmark=bookmark)
 
 
-class DeleteLink(graphene.relay.ClientIDMutation):
+class DeleteBookmark(graphene.relay.ClientIDMutation):
     class Input:
         id = graphene.ID()
 
-    link = graphene.Field(LinkNode)
+    bookmark = graphene.Field(BookmarkNode)
     success = graphene.Boolean()
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **data):
-        link = Link.objects.get(
+        bookmark = Bookmark.objects.get(
             pk=data.get('id'),
             created_by=info.context.user
         )
 
-        link.delete()
+        bookmark.delete()
 
-        return DeleteLink(link=link, success=True)
+        return DeleteBookmark(bookmark=bookmark, success=True)
 
 
 class CreateCollection(graphene.relay.ClientIDMutation):
@@ -120,7 +126,10 @@ class DeleteCollection(graphene.relay.ClientIDMutation):
         return DeleteCollection(collection=collection, success=True)
 
 
-class LinkQuery(graphene.ObjectType):
+class BookmarkQuery(graphene.ObjectType):
+    bookmark = graphene.relay.Node.Field(BookmarkNode)
+    all_bookmarks = DjangoFilterConnectionField(BookmarkNode)
+
     link = graphene.relay.Node.Field(LinkNode)
     all_links = DjangoFilterConnectionField(LinkNode)
 
@@ -128,9 +137,9 @@ class LinkQuery(graphene.ObjectType):
     all_collections = DjangoFilterConnectionField(CollectionNode)
 
 
-class LinkMutation(graphene.ObjectType):
-    create_link = CreateLink.Field()
-    delete_link = DeleteLink.Field()
+class BookmarkMutation(graphene.ObjectType):
+    create_bookmark = CreateBookmark.Field()
+    delete_bookmark = DeleteBookmark.Field()
 
     create_collection = CreateCollection.Field()
     delete_collection = DeleteCollection.Field()
