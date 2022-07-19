@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e0cff5c200dbbbb03fdbd7ca24e233703385930736057be4725d2a1c9673abc5"
+            "sha256": "ba24226bc78ea10a06a6a7a6304fe81116922bbaa15dd5a5f0d9828eee20efeb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -44,7 +44,7 @@
                 "sha256:84c85a9078b11105f04f3036a9482ae10e4621616db313fe045dd24743a0820d",
                 "sha256:fe86415d55e84719d75f8b69414f6438ac3547d2078ab91b67e779ef69378412"
             ],
-            "markers": "python_full_version >= '3.6.0'",
+            "markers": "python_version >= '3.6'",
             "version": "==2022.6.15"
         },
         "charset-normalizer": {
@@ -52,7 +52,7 @@
                 "sha256:5189b6f22b01957427f35b6a08d9a0bc45b46d3788ef5a92e978433c7a35f8a5",
                 "sha256:575e708016ff3a5e3681541cb9d79312c416835686d054a23accb873b254f413"
             ],
-            "markers": "python_full_version >= '3.6.0'",
+            "markers": "python_version >= '3.6'",
             "version": "==2.1.0"
         },
         "dj-database-url": {
@@ -249,6 +249,14 @@
             "index": "pypi",
             "version": "==2.28.1"
         },
+        "robotspy": {
+            "hashes": [
+                "sha256:a7dc2f69d325112cb6074268edd20116a21363c7a3ce8da45b89d4f3b95059df",
+                "sha256:d59740251ab25b60d882362e7135341608bec84fd78e3d2bf4812e6e60f0135b"
+            ],
+            "index": "pypi",
+            "version": "==0.7.0"
+        },
         "rx": {
             "hashes": [
                 "sha256:13a1d8d9e252625c173dc795471e614eadfe1cf40ffc684e08b8fff0d9748c23",
@@ -277,7 +285,7 @@
                 "sha256:3b2503d3c7084a42b1ebd08116e5f81aadfaea95863628c80a3b774a11b7c759",
                 "sha256:fc53893b3da2c33de295667a0e19f078c14bf86544af307354de5fcf12a3f30d"
             ],
-            "markers": "python_full_version >= '3.6.0'",
+            "markers": "python_version >= '3.6'",
             "version": "==2.3.2.post1"
         },
         "sqlparse": {

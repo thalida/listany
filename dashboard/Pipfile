@@ -14,6 +14,7 @@ beautifulsoup4 = "*"
 django-graphql-auth = "*"
 django-graphql-jwt = "==0.3.0"
 pillow = "*"
+robotspy = "*"
 
 [dev-packages]
 

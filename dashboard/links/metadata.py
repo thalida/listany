@@ -1,8 +1,8 @@
 import os
 import urllib
-import urllib.robotparser
 from django.core import files
 from django.utils import timezone
+import robots
 import requests
 from bs4 import BeautifulSoup
 
@@ -65,12 +65,10 @@ class Metadata:
         return os.path.basename(path)
 
     def can_fetch(self, url, namespace=None):
-        robotfile_parser = urllib.robotparser.RobotFileParser()
         robotfile_url = urllib.parse.urljoin(self.url, '/robots.txt')
-        robotfile_parser.set_url(robotfile_url)
-        robotfile_parser.read()
 
-        is_fetchable = robotfile_parser.can_fetch('*', url)
+        parser = robots.RobotsParser.from_uri(robotfile_url)
+        is_fetchable = parser.can_fetch("*", url)
 
         match namespace:
             case 'icon':
@@ -83,11 +81,6 @@ class Metadata:
         return is_fetchable
 
     def fetch(self):
-        robotfile_parser = urllib.robotparser.RobotFileParser()
-        robotfile_url = urllib.parse.urljoin(self.url, '/robots.txt')
-        robotfile_parser.set_url(robotfile_url)
-        robotfile_parser.read()
-
         if not self.can_fetch(self.url):
             return
 
