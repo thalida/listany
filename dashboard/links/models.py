@@ -1,41 +1,11 @@
-import os
+
+from email.mime import image
+from turtle import title
 import uuid
-import urllib
-import urllib.robotparser
-from django.utils import timezone
-from django.core import files
-from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 from django_extensions.db.fields import AutoSlugField
-import requests
-from bs4 import BeautifulSoup
 from users.models import User
-
-
-def download_file_from_url(url, file_name):
-    # Stream the image from the url
-    try:
-        request = requests.get(url, stream=True)
-    except requests.exceptions.RequestException as error:
-        raise Exception(error)
-
-    if request.status_code != requests.codes.ok:
-        return None
-
-    # Create a temporary file
-    temp_file = NamedTemporaryFile(delete=True)
-
-    # Read the streamed image in sections
-    for block in request.iter_content(1024 * 8):
-        # If no more file then stop
-        if not block:
-            break
-
-        # Write image block to temporary file
-        temp_file.write(block)
-
-    temp_file.flush()
-    return files.File(temp_file, name=file_name)
+from .metadata import Metadata
 
 
 class Link(models.Model):
@@ -69,7 +39,19 @@ class Link(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        LinkMeta.objects.update_or_create(link=self)
+        self.save_metadata()
+
+    def save_metadata(self):
+        url_metadata = Metadata(
+            self.url,
+            get_filename=lambda: f"{self.id}-{self.created_by.id}"
+        )
+        url_metadata.fetch()
+        LinkMeta.objects.update_or_create(
+            link=self,
+            **url_metadata.metadata,
+            **url_metadata.fetch_stats,
+        )
 
 
 class LinkMeta(models.Model):
@@ -114,109 +96,32 @@ class LinkMeta(models.Model):
         default=None
     )
 
-    robot_fetch_meta_allowed = models.BooleanField(default=True)
-    robot_fetch_icon_allowed = models.BooleanField(default=True)
-    robot_fetch_image_allowed = models.BooleanField(default=True)
-    robot_fetched_at = models.DateTimeField(blank=True, null=True)
+    is_fetch_allowed = models.BooleanField(
+        blank=True,
+        null=True,
+        default=None
+    )
+    is_fetch_icon_allowed = models.BooleanField(
+        blank=True,
+        null=True,
+        default=None
+    )
+    is_fetch_image_allowed = models.BooleanField(
+        blank=True,
+        null=True,
+        default=None
+    )
+    last_fetched_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        default=None
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         pass
-
-    def get_metadata(self, *args, **kwargs):
-        link_url = self.link.url
-        robotfile_parser = urllib.robotparser.RobotFileParser()
-        robotfile_url = urllib.parse.urljoin(link_url, '/robots.txt')
-        robotfile_parser.set_url(robotfile_url)
-        robotfile_parser.read()
-
-        if not robotfile_parser.can_fetch('*', link_url):
-            self.robot_fetch_meta_allowed = False
-            self.robot_fetch_icon_allowed = False
-            self.robot_fetch_image_allowed = False
-            return
-
-        try:
-            response = requests.get(link_url)
-            soup = BeautifulSoup(response.text, 'html.parser')
-
-            self.robot_fetched_at = timezone.now()
-
-            url_parts = urllib.parse.urlparse(link_url)
-            base_url = f'{url_parts.scheme}://{url_parts.netloc}'
-            if url_parts.port:
-                base_url = f'{base_url}:{url_parts.port}'
-
-            all_icons = soup.find_all('link', rel='icon')
-            icon = None
-            for tmp_icon in all_icons:
-                if tmp_icon.get('href') is None:
-                    continue
-
-                if icon is None:
-                    icon = tmp_icon
-                    continue
-
-                icon_size = icon.get('sizes', '16x16').split('x')
-                tmp_icon_size = tmp_icon.get('sizes', '16x16').split('x')
-                if int(icon_size[0]) < int(tmp_icon_size[0]):
-                    icon = tmp_icon
-
-            icon_url = urllib.parse.urljoin(link_url, icon.get('href'))
-            if robotfile_parser.can_fetch('*', icon_url):
-                icon_path = urllib.parse.urlparse(icon_url).path
-                icon_ext = os.path.splitext(icon_path)[1]
-                self.icon = download_file_from_url(
-                    icon_url,
-                    f"{str(self.id)}{icon_ext}"
-                )
-            else:
-                self.robot_fetch_icon_allowed = False
-
-            image = soup.find("meta", property="og:image")
-            if image:
-                image_url = urllib.parse.urljoin(
-                    link_url,
-                    image.get('content')
-                )
-                if robotfile_parser.can_fetch('*', image_url):
-                    image_path = urllib.parse.urlparse(image_url).path
-                    image_ext = os.path.splitext(image_path)[1]
-                    self.image = download_file_from_url(
-                        image_url,
-                        f"{str(self.id)}{image_ext}"
-                    )
-                else:
-                    self.robot_fetch_image_allowed = False
-
-            alt = soup.find("meta", property="og:image:alt")
-            self.image_alt = alt.get('content') if alt else None
-
-            og_title = soup.find("meta", property="og:title")
-            if og_title:
-                self.title = og_title.get('content')
-            else:
-                self.title = soup.title.string
-
-            og_desc = soup.find("meta", property="og:description")
-            if og_desc:
-                self.description = og_desc.get('content')
-            else:
-                meta_desc = soup.find("meta", property="description")
-                self.description = meta_desc.get('content')
-
-            og_type = soup.find("meta", property="og:type")
-            self.link_type = og_type.get('content') if og_type else None
-
-        except Exception as error:
-            raise error
-
-    def save(self, *args, **kwargs):
-        self.get_metadata()
-        self.full_clean()
-        super().save(*args, **kwargs)
 
 
 class Collection(models.Model):
