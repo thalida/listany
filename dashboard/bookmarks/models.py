@@ -78,6 +78,18 @@ class Link(models.Model):
         null=True,
         default=None
     )
+    theme_color = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        default=None
+    )
+    curated_by = models.ForeignKey(
+        User,
+        related_name='links',
+        on_delete=models.CASCADE,
+    )
+
     is_fetch_allowed = models.BooleanField(
         blank=True,
         null=True,
@@ -125,6 +137,7 @@ class Link(models.Model):
             self.is_fetch_icon_allowed = url_metadata.fetch_stats["is_fetch_icon_allowed"]
             self.is_fetch_image_allowed = url_metadata.fetch_stats["is_fetch_image_allowed"]
             self.last_fetched_at = url_metadata.fetch_stats["last_fetched_at"]
+            self.theme_color = url_metadata.metadata["theme_color"]
 
         super().save(*args, **kwargs)
 

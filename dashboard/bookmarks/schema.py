@@ -56,7 +56,10 @@ class CreateBookmark(graphene.relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **data):
-        link, _ = Link.objects.get_or_create(url=data.get('url'))
+        link, _ = Link.objects.get_or_create(
+            url=data.get('url'),
+            curated_by=info.context.user,
+        )
         bookmark = Bookmark(
             created_by=info.context.user,
             link=link,

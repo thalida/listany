@@ -93,6 +93,7 @@ class Metadata:
             self.metadata["icon"] = self.get_icon()
             self.metadata["image"] = self.get_image()
             self.metadata["image_alt"] = self.get_image_alt()
+            self.metadata["theme_color"] = self.get_theme_color()
 
             self.fetch_stats["last_fetched_at"] = timezone.now()
 
@@ -194,5 +195,12 @@ class Metadata:
         meta_desc = self.soup.find("meta", property="description")
         if meta_desc:
             return meta_desc.get('content')
+
+        return default
+
+    def get_theme_color(self, default=None):
+        theme_color = self.soup.find("meta", attrs={"name": "theme-color"})
+        if theme_color:
+            return theme_color.get('content')
 
         return default
