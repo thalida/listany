@@ -1,3 +1,5 @@
+# Listany - Copyright (C) 2022  Thalida Noel
+
 from django.contrib.auth import get_user_model
 
 import graphene

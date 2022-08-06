@@ -1,0 +1,20 @@
+{
+	"copyright_notice": {
+		"scope": "javascript,typescript,python,dockerfile,scss",
+		"prefix": [
+			"copyright",
+		],
+		"body": [
+			"$LINE_COMMENT Listany - Copyright (C) 2022  Thalida Noel",
+		]
+	},
+	"copyright_notice_html": {
+		"scope": "html, vue",
+		"prefix": [
+			"copyright-html",
+		],
+		"body": [
+			"$BLOCK_COMMENT_START Listany - Copyright (C) 2022  Thalida Noel $BLOCK_COMMENT_END",
+		]
+	},
+}

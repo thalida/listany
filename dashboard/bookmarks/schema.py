@@ -1,3 +1,5 @@
+# Listany - Copyright (C) 2022  Thalida Noel
+
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -56,7 +58,10 @@ class CreateBookmark(graphene.relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **data):
-        link, _ = Link.objects.get_or_create(url=data.get('url'))
+        link, _ = Link.objects.get_or_create(
+            url=data.get('url'),
+            curated_by=info.context.user,
+        )
         bookmark = Bookmark(
             created_by=info.context.user,
             link=link,

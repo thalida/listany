@@ -24,14 +24,27 @@
 				"python.linting.pycodestylePath": "/usr/local/py-utils/bin/pycodestyle",
 				"python.linting.pydocstylePath": "/usr/local/py-utils/bin/pydocstyle",
 				"python.linting.pylintPath": "/usr/local/py-utils/bin/pylint",
-				"python.testing.pytestPath": "/usr/local/py-utils/bin/pytest"
+				"python.testing.pytestPath": "/usr/local/py-utils/bin/pytest",
+				"autoSnippet.snippets": [
+					{
+						"language": "html",
+						"snippet": "copyright_notice_html"
+					},
+					{
+						"pattern": "**",
+						"snippet": "copyright_notice"
+					}
+				]
 			},
 			"extensions": [
 				"ms-python.python",
 				"ms-python.vscode-pylance",
 				"GitHub.copilot",
 				"GitHub.copilot-labs",
-				"sleistner.vscode-fileutils"
+				"sleistner.vscode-fileutils",
+				"Gruntfuggly.auto-snippet",
+				"Vue.volar",
+				"Vue.vscode-typescript-vue-plugin"
 			]
 		}
 	},

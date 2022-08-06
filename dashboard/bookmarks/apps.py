@@ -1,3 +1,4 @@
+# Listany - Copyright (C) 2022  Thalida Noel
 from django.apps import AppConfig
 
 

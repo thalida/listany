@@ -1,3 +1,5 @@
+# Listany - Copyright (C) 2022  Thalida Noel
+
 """dashboard URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
