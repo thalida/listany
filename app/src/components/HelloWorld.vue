@@ -1,3 +1,5 @@
+<!-- Listany - Copyright (C) 2022  Thalida Noel -->
+
 <script setup lang="ts">
 defineProps<{
   msg: string;
@@ -32,6 +34,7 @@ h3 {
 }
 
 @media (min-width: 1024px) {
+
   .greetings h1,
   .greetings h3 {
     text-align: left;

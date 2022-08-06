@@ -1,3 +1,4 @@
+// Listany - Copyright (C) 2022  Thalida Noel
 import { defineStore } from "pinia";
 
 export const useCounterStore = defineStore({

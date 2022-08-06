@@ -1,3 +1,5 @@
+# Listany - Copyright (C) 2022  Thalida Noel
+
 import graphene
 from users.schema import UserQuery, UserMutation
 from bookmarks.schema import BookmarkQuery, BookmarkMutation

@@ -1,3 +1,5 @@
+// Listany - Copyright (C) 2022  Thalida Noel
+
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 

@@ -1,6 +1,6 @@
 {
 	"copyright_notice": {
-		"scope": "javascript,typescript,python,vue,dockerfile,scss",
+		"scope": "javascript,typescript,python,dockerfile,scss",
 		"prefix": [
 			"copyright",
 		],
@@ -9,7 +9,7 @@
 		]
 	},
 	"copyright_notice_html": {
-		"scope": "html",
+		"scope": "html, vue",
 		"prefix": [
 			"copyright-html",
 		],

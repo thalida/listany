@@ -1,3 +1,5 @@
+# Listany - Copyright (C) 2022  Thalida Noel
+
 import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser

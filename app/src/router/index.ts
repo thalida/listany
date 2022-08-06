@@ -1,3 +1,4 @@
+// Listany - Copyright (C) 2022  Thalida Noel
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 

@@ -1,3 +1,4 @@
+<!-- Listany - Copyright (C) 2022  Thalida Noel -->
 <template>
   <div class="about">
     <h1>This is an about page</h1>

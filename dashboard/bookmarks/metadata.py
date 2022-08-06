@@ -1,3 +1,5 @@
+# Listany - Copyright (C) 2022  Thalida Noel
+
 import os
 import urllib
 from django.core import files

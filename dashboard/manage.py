@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# Listany - Copyright (C) 2022  Thalida Noel
+
 """Django's command-line utility for administrative tasks."""
 import os
 import sys

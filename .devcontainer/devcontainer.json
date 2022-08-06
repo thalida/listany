@@ -42,7 +42,9 @@
 				"GitHub.copilot",
 				"GitHub.copilot-labs",
 				"sleistner.vscode-fileutils",
-				"Gruntfuggly.auto-snippet"
+				"Gruntfuggly.auto-snippet",
+				"Vue.volar",
+				"Vue.vscode-typescript-vue-plugin"
 			]
 		}
 	},

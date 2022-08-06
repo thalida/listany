@@ -1,3 +1,5 @@
+# Listany - Copyright (C) 2022  Thalida Noel
+
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
