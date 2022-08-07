@@ -52,7 +52,8 @@ import SupportIcon from "./icons/IconSupport.vue";
     <a target="_blank" href="https://router.vuejs.org/">Vue Router</a>,
     <a target="_blank" href="https://test-utils.vuejs.org/">Vue Test Utils</a>,
     and
-    <a target="_blank" href="https://github.com/vuejs/devtools">Vue Dev Tools</a>. If you need more resources, we
+    <a target="_blank" href="https://github.com/vuejs/devtools">Vue Dev Tools</a>. If you need more
+    resources, we
     suggest paying
     <a target="_blank" href="https://github.com/vuejs/awesome-vue">Awesome Vue</a>
     a visit.
@@ -67,7 +68,8 @@ import SupportIcon from "./icons/IconSupport.vue";
     Got stuck? Ask your question on
     <a target="_blank" href="https://chat.vuejs.org">Vue Land</a>, our official
     Discord server, or
-    <a target="_blank" href="https://stackoverflow.com/questions/tagged/vue.js">StackOverflow</a>. You should also
+    <a target="_blank" href="https://stackoverflow.com/questions/tagged/vue.js">StackOverflow</a>. You
+    should also
     subscribe to
     <a target="_blank" href="https://news.vuejs.org">our mailing list</a> and
     follow the official
