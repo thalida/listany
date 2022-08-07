@@ -1,5 +1,4 @@
 # Listany - Copyright (C) 2022  Thalida Noel
-import email
 from django.test import TestCase
 import graphene
 from bookmarks.models import Link
