@@ -92,6 +92,7 @@ class Link(models.Model):
         on_delete=models.CASCADE,
     )
 
+    is_auto_fetch_enabled = models.BooleanField(default=True)
     is_fetch_allowed = models.BooleanField(
         blank=True,
         null=True,
@@ -123,7 +124,7 @@ class Link(models.Model):
         pass
 
     def save(self, *args, **kwargs):
-        if self.created_at is None:
+        if self.created_at is None and self.is_auto_fetch_enabled:
             url_metadata = Metadata(
                 self.url,
                 get_filename=lambda: f"{self.id}"

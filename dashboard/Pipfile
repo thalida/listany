@@ -15,8 +15,10 @@ django-graphql-auth = "*"
 django-graphql-jwt = "==0.3.0"
 pillow = "*"
 robotspy = "*"
+pylint-django = "*"
 
 [dev-packages]
+pytest = "*"
 
 [requires]
 python_version = "3.10"
