@@ -136,6 +136,8 @@ GRAPHENE = {
 
 AUTH_USER_MODEL = "authentication.User"
 LOGIN_REDIRECT_URL = reverse_lazy("admin:index")
+LOGOUT_REDIRECT_URL = reverse_lazy("admin:login")
+
 SOCIAL_AUTH_USER_MODEL = "authentication.User"
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
@@ -207,8 +209,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
 UNFOLD = {
-    "SITE_TITLE": "Listany Admin",
-    "SITE_HEADER": "Listany Admin",
+    "SITE_TITLE": "Listany",
+    "SITE_HEADER": "Listany",
     "SITE_URL": "/",
     # "SITE_ICON": lambda request: static("logo.svg"),
     # "DASHBOARD_CALLBACK": "sample_app.dashboard_callback",
@@ -216,7 +218,9 @@ UNFOLD = {
         "image": lambda r: static("common/images/pexels-anni-roenkae-2832382.jpg"),
         "redirect_after": lambda r: reverse_lazy("admin:index"),
     },
-    "STYLES": [],
+    "STYLES": [
+        lambda request: static("common/css/styles.css"),
+    ],
     "SCRIPTS": [],
     "SIDEBAR": {
         "show_search": True,
