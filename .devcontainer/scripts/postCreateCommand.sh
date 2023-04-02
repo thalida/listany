@@ -6,6 +6,7 @@ set +o allexport
 
 cd /workspaces/listany/api
 poetry install
+npm install
 
 # cd /workspaces/listany/app
 # npm install
