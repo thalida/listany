@@ -102,6 +102,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -133,9 +135,11 @@ GRAPHENE = {
 # User & Authentication
 
 AUTH_USER_MODEL = "authentication.User"
+LOGIN_REDIRECT_URL = reverse_lazy("admin:index")
 SOCIAL_AUTH_USER_MODEL = "authentication.User"
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
+SOCIAL_AUTH_URL_NAMESPACE = "social"
 AUTHENTICATION_BACKENDS = (
     "social_core.backends.google.GoogleOAuth2",
     "graphql_jwt.backends.JSONWebTokenBackend",
@@ -154,6 +158,7 @@ SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.associate_user",
     "social_core.pipeline.social_auth.load_extra_data",
     "social_core.pipeline.user.user_details",
+    "authentication.pipeline.assign_default_groups",
 )
 
 
