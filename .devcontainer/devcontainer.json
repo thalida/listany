@@ -40,23 +40,6 @@
 					"--load-plugins pylint_django",
 					"--django-settings-module=api.settings"
 				]
-				// // Shared Git Settings
-				// "git.rebaseWhenSync": true,
-				// // Python Settings
-				// "python.venvPath": "/root/.cache/pypoetry/virtualenvs",
-				// "python.defaultInterpreterPath": "/usr/local/bin/python",
-				// "python.linting.enabled": true,
-				// "python.linting.pylintEnabled": true,
-				// "python.languageServer": "Pylance",
-				// "python.testing.unittestEnabled": false,
-				// "python.testing.pytestEnabled": true,
-				// "python.analysis.extraPaths": [
-				// 	"/workspaces/listany/api"
-				// ],
-				// "python.linting.pylintArgs": [
-				// 	"--load-plugins pylint_django",
-				// 	"--django-settings-module=api.settings"
-				// ]
 			},
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [

@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "django_filters",
     "authentication.apps.AuthenticationConfig",
     "common.apps.CommonConfig",
+    "core.apps.CoreConfig",
 ]
 
 MIDDLEWARE = [
@@ -237,9 +238,9 @@ UNFOLD = {
                         # "badge": "sample_app.badge_callback",
                     },
                     {
-                        "title": _("Users"),
-                        "icon": "people",
-                        "link": reverse_lazy("admin:authentication_user_changelist"),
+                        "title": _("Collections"),
+                        "icon": "collections_bookmark",
+                        "link": reverse_lazy("admin:core_collection_changelist"),
                     },
                 ],
             },
@@ -264,6 +265,27 @@ UNFOLD = {
                 {
                     "title": _("All Social Accounts"),
                     "link": reverse_lazy("admin:social_django_usersocialauth_changelist"),
+                },
+            ],
+        },
+        {
+            "models": [
+                "core.collection",
+                "core.collectionlink",
+                "core.usertag",
+            ],
+            "items": [
+                {
+                    "title": _("My Collections"),
+                    "link": reverse_lazy("admin:core_collection_changelist"),
+                },
+                {
+                    "title": _("My Links"),
+                    "link": reverse_lazy("admin:core_collectionlink_changelist"),
+                },
+                {
+                    "title": _("My Tags"),
+                    "link": reverse_lazy("admin:core_usertag_changelist"),
                 },
             ],
         },
