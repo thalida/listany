@@ -1,0 +1,81 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/postgres
+{
+	"name": "Python 3 & PostgreSQL",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {},
+		"ghcr.io/devcontainers-contrib/features/poetry:2": {},
+		"ghcr.io/devcontainers-contrib/features/black:2": {}
+	},
+	"customizations": {
+		"vscode": {
+			"settings": {
+				// Shared Git Settings
+				"git.rebaseWhenSync": true,
+				// Python Settings
+				"python.venvPath": "/root/.cache/pypoetry/virtualenvs",
+				"python.defaultInterpreterPath": "/usr/local/bin/python",
+				"python.linting.enabled": true,
+				"python.linting.pylintEnabled": true,
+				"python.formatting.autopep8Path": "/usr/local/py-utils/bin/autopep8",
+				"python.formatting.blackPath": "/usr/local/py-utils/bin/black",
+				"python.formatting.yapfPath": "/usr/local/py-utils/bin/yapf",
+				"python.linting.banditPath": "/usr/local/py-utils/bin/bandit",
+				"python.linting.flake8Path": "/usr/local/py-utils/bin/flake8",
+				"python.linting.mypyPath": "/usr/local/py-utils/bin/mypy",
+				"python.linting.pycodestylePath": "/usr/local/py-utils/bin/pycodestyle",
+				"python.linting.pydocstylePath": "/usr/local/py-utils/bin/pydocstyle",
+				"python.linting.pylintPath": "/usr/local/py-utils/bin/pylint",
+				"python.testing.pytestPath": "/usr/local/py-utils/bin/pytest",
+				"python.languageServer": "Pylance",
+				"python.testing.unittestEnabled": false,
+				"python.testing.pytestEnabled": true,
+				"python.analysis.extraPaths": [
+					"/workspaces/listany/api"
+				],
+				"python.linting.pylintArgs": [
+					"--load-plugins pylint_django",
+					"--django-settings-module=api.settings"
+				]
+				// // Shared Git Settings
+				// "git.rebaseWhenSync": true,
+				// // Python Settings
+				// "python.venvPath": "/root/.cache/pypoetry/virtualenvs",
+				// "python.defaultInterpreterPath": "/usr/local/bin/python",
+				// "python.linting.enabled": true,
+				// "python.linting.pylintEnabled": true,
+				// "python.languageServer": "Pylance",
+				// "python.testing.unittestEnabled": false,
+				// "python.testing.pytestEnabled": true,
+				// "python.analysis.extraPaths": [
+				// 	"/workspaces/listany/api"
+				// ],
+				// "python.linting.pylintArgs": [
+				// 	"--load-plugins pylint_django",
+				// 	"--django-settings-module=api.settings"
+				// ]
+			},
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"ms-python.python",
+				"ms-python.pylint",
+				"ms-python.vscode-pylance",
+				"GitHub.copilot",
+				"GitHub.copilot-labs",
+				"sleistner.vscode-fileutils",
+				"Vue.vscode-typescript-vue-plugin",
+				"Vue.volar",
+			]
+		}
+	},
+	"forwardPorts": [
+		8000,
+		8080
+	],
+	"postCreateCommand": "bash -i /workspaces/listany/.devcontainer/scripts/postCreateCommand.sh",
+	"postStartCommand": "bash -i /workspaces/listany/.devcontainer/scripts/postStartCommand.sh",
+	"remoteUser": "root"
+}
