@@ -1,38 +1,37 @@
 # listany
 
-## Models
+## Architecture Overview
 
-### Link
-Field | Type | Description
----|---|---
-id | uuid |
-url | string | The URL of the link
-title | string | The title of the link
-description | string | The description of the link
-created_at | datetime | The date the link was created
-updated_at | datetime | The date the link was updated
-created_by | uuid | The user who created the link
-
-### Collection
-Field | Type | Description
----|---|---
-id | uuid |
-name | string | The name of the collection
-description | string | The description of the collection
-created_at | datetime | The date the collection was created
-updated_at | datetime | The date the collection was updated
-created_by | uuid | The user who created the collection
-links | foreign key | The links in the collection
+### App
+#### Core Frameworks
+| Framework | Description |
+| --- | --- |
 
 
-### Tags
-Field | Type | Description
----|---|---
-id | uuid |
-name | string | The name of the tag
-description | string | The description of the tag
-created_at | datetime | The date the tag was created
-updated_at | datetime | The date the tag was updated
-created_by | uuid | The user who created the tag
-links | foreign key | The links with the tag
-collections | foreign key | The collections with the tag
+#### Additional Packages
+| Project | Description | Required For |
+| --- | --- | --- |
+
+
+
+### API
+#### Core Frameworks
+| Framework | Description |
+| --- | --- |
+| [Django](https://www.djangoproject.com/) | Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design. |
+| [Graphene Django](https://docs.graphene-python.org/projects/django/en/latest/) | Graphene-Django is a library for building GraphQL APIs in Django. |
+| [Python Social Auth](https://python-social-auth.readthedocs.io/en/latest/) | Python Social Auth is an easy to setup social authentication/registration mechanism with support for several frameworks and auth providers out of the box. |
+
+#### Additional Packages
+| Project | Description | Required For |
+| --- | --- | --- |
+| [Django Unfold](https://github.com/remastr/django-unfold) | Django Admin Theme |
+| [Material Icons](https://fonts.google.com/icons?selected=Material+Symbols+Outlined:arrow_forward:FILL@0;wght@400;GRAD@0;opsz@48) | Material Icons is a font and icon toolkit. | Django Unfold |
+| [Font Awesome v6](https://fontawesome.com/v6/search?o=r&m=free) | Font Awesome is a font and icon toolkit. | Django Unfold |
+| [Tailwind CSS](https://tailwindcss.com/) | Tailwind CSS is a utility-first CSS framework for rapidly building custom user interfaces. | Django Unfold |
+
+---
+
+## License
+This project is licensed under the terms of GNU Affero General Public License.
+See [LICENSE](LICENSE) for more details.
