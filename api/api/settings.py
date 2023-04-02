@@ -240,11 +240,21 @@ UNFOLD = {
         {
             "models": [
                 "authentication.user",
+                "auth.group",
+                "social_django.usersocialauth",
             ],
             "items": [
                 {
                     "title": _("All Users"),
                     "link": reverse_lazy("admin:authentication_user_changelist"),
+                },
+                {
+                    "title": _("All Groups"),
+                    "link": reverse_lazy("admin:auth_group_changelist"),
+                },
+                {
+                    "title": _("All Social Accounts"),
+                    "link": reverse_lazy("admin:social_django_usersocialauth_changelist"),
                 },
             ],
         },
