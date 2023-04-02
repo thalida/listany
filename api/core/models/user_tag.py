@@ -18,7 +18,7 @@ class UserTag(models.Model):
         "core.Tag",
         on_delete=models.CASCADE
     )
-    color = models.CharField(max_length=6, blank=True)
+    color = models.CharField(max_length=7, blank=True)
     description = models.TextField(blank=True)
 
     def __str__(self):
