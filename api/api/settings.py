@@ -69,10 +69,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "graphene_django",
-    "graph_auth",
     "corsheaders",
-    "social_django",
+    "graphene_django",
     "django_filters",
     "authentication.apps.AuthenticationConfig",
     "common.apps.CommonConfig",
@@ -104,8 +102,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "social_django.context_processors.backends",
-                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -129,22 +125,7 @@ DATABASES = {
 
 GRAPHENE = {
     "SCHEMA": "api.schema.schema",
-    "MIDDLEWARE": [
-        "graphql_jwt.middleware.JSONWebTokenMiddleware",
-    ],
-}
-
-GRAPHQL_JWT = {
-    "JWT_VERIFY_EXPIRATION": True,
-    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-}
-
-GRAPHQL_AUTH = {
-    "WEBSITE_NAME": "Listany",
-    "ACTIVATION_DOMAIN": "localhost:8000",
-    "EMAIL_FROM": "verify@localhost",
-    "ALLOW_LOGIN_NOT_VERIFIED": True,
-    "ALLOW_LOGIN_WITH_SECONDARY_EMAIL": False,
+    "MIDDLEWARE": [],
 }
 
 # User & Authentication
@@ -153,35 +134,10 @@ AUTH_USER_MODEL = "authentication.User"
 LOGIN_REDIRECT_URL = reverse_lazy("admin:index")
 LOGOUT_REDIRECT_URL = reverse_lazy("admin:login")
 
-SOCIAL_AUTH_USER_MODEL = "authentication.User"
-SOCIAL_AUTH_JSONFIELD_ENABLED = True
-SOCIAL_AUTH_UUID_LENGTH = 4
-SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = False
-SOCIAL_AUTH_SLUGIFY_USERNAMES = True
-SOCIAL_AUTH_URL_NAMESPACE = "social"
 AUTHENTICATION_BACKENDS = (
-    "social_core.backends.google.GoogleOAuth2",
-    "social_core.backends.email.EmailAuth",
-    "graphql_jwt.backends.JSONWebTokenBackend",
     "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
 )
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get("GOOGLE_OAUTH2_CLIENT_ID")
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("GOOGLE_OAUTH2_SECRET")
-
-SOCIAL_AUTH_PIPELINE = (
-    "social_core.pipeline.social_auth.social_details",
-    "social_core.pipeline.social_auth.social_uid",
-    "social_core.pipeline.social_auth.social_user",
-    "authentication.pipeline.get_username",
-    "social_core.pipeline.user.get_username",
-    "social_core.pipeline.social_auth.associate_by_email",
-    "social_core.pipeline.user.create_user",
-    "social_core.pipeline.social_auth.associate_user",
-    "social_core.pipeline.social_auth.load_extra_data",
-    "social_core.pipeline.user.user_details",
-    "authentication.pipeline.assign_default_groups",
-)
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -271,7 +227,6 @@ UNFOLD = {
             "models": [
                 "authentication.user",
                 "auth.group",
-                "social_django.usersocialauth",
             ],
             "items": [
                 {
@@ -281,10 +236,6 @@ UNFOLD = {
                 {
                     "title": _("All Groups"),
                     "link": reverse_lazy("admin:auth_group_changelist"),
-                },
-                {
-                    "title": _("All Social Accounts"),
-                    "link": reverse_lazy("admin:social_django_usersocialauth_changelist"),
                 },
             ],
         },
