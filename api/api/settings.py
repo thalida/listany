@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from gqlauth.settings_type import GqlAuthSettings
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
 from django.templatetags.static import static
@@ -69,7 +70,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "graphene_django",
+    "strawberry.django",
+    "gqlauth",
     "corsheaders",
     "social_django",
     "django_filters",
@@ -86,6 +88,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "gqlauth.core.middlewares.django_jwt_middleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -134,6 +137,11 @@ GRAPHENE = {
 }
 
 # User & Authentication
+
+GQL_AUTH = GqlAuthSettings(
+    LOGIN_REQUIRE_CAPTCHA=False,
+    REGISTER_REQUIRE_CAPTCHA=False,
+)
 
 AUTH_USER_MODEL = "authentication.User"
 LOGIN_REDIRECT_URL = reverse_lazy("admin:index")

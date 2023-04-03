@@ -1,13 +1,17 @@
-import graphene
-from authentication.schema import AuthQuery, AuthMutation
+import typing
+import strawberry
+
+from authentication.schema import Query as AuthenticationQuery, Mutation as AuthenticationMutation
 
 
-class Query(AuthQuery, graphene.ObjectType):
+@strawberry.type
+class Query(AuthenticationQuery):
     pass
 
 
-class Mutation(AuthMutation, graphene.ObjectType):
+@strawberry.type
+class Mutation(AuthenticationMutation):
     pass
 
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+schema = strawberry.Schema(query=Query, mutation=Mutation)
