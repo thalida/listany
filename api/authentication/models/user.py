@@ -14,6 +14,7 @@ class User(AbstractUser):
         blank=False,
         max_length=254,
         verbose_name="email address"
+        unique=True
     )
 
     USERNAME_FIELD = "username"

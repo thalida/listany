@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "graphene_django",
+    "graph_auth",
     "corsheaders",
     "social_django",
     "django_filters",
@@ -133,6 +134,19 @@ GRAPHENE = {
     ],
 }
 
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+}
+
+GRAPHQL_AUTH = {
+    "WEBSITE_NAME": "Listany",
+    "ACTIVATION_DOMAIN": "localhost:8000",
+    "EMAIL_FROM": "verify@localhost",
+    "ALLOW_LOGIN_NOT_VERIFIED": True,
+    "ALLOW_LOGIN_WITH_SECONDARY_EMAIL": False,
+}
+
 # User & Authentication
 
 AUTH_USER_MODEL = "authentication.User"
@@ -147,6 +161,7 @@ SOCIAL_AUTH_SLUGIFY_USERNAMES = True
 SOCIAL_AUTH_URL_NAMESPACE = "social"
 AUTHENTICATION_BACKENDS = (
     "social_core.backends.google.GoogleOAuth2",
+    "social_core.backends.email.EmailAuth",
     "graphql_jwt.backends.JSONWebTokenBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
@@ -186,6 +201,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
