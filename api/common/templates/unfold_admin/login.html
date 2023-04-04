@@ -51,6 +51,11 @@
       {% include "unfold/helpers/messages/error.html" with error=message %}
       {% endif %}
 
+      <a href="{% url 'social:begin' 'google-oauth2' %}"
+        class="bg-slate-950 block border border-transparent font-semibold drop-shadow-md py-4 rounded-md text-sm text-center text-white space-x-2 w-full transition-colors hover:bg-slate-900">
+        <i class="fa-brands fa-google"></i> <span>Continue with Google</span>
+      </a>
+
       <form action="{{ app_path }}" method="post" id="login-form" class="mt-8 py-8 border-t-2 border-slate-200">
         {% csrf_token %}
 
