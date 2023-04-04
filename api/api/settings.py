@@ -69,11 +69,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "graphene_django",
-    "graph_auth",
     "corsheaders",
-    "social_django",
+    "graphene_django",
     "django_filters",
+    "graph_auth",
+    "social_django",
     "authentication.apps.AuthenticationConfig",
     "common.apps.CommonConfig",
     "core.apps.CoreConfig",
@@ -139,17 +139,22 @@ GRAPHQL_JWT = {
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
 }
 
+# User & Authentication
+
+AUTH_USER_MODEL = "authentication.User"
+AUTHENTICATION_BACKENDS = (
+    "social_core.backends.google.GoogleOAuth2",
+    "social_core.backends.email.EmailAuth",
+    "graphql_jwt.backends.JSONWebTokenBackend",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
 GRAPHQL_AUTH = {
     "WEBSITE_NAME": "Listany",
-    "ACTIVATION_DOMAIN": "localhost:8000",
-    "EMAIL_FROM": "verify@localhost",
     "ALLOW_LOGIN_NOT_VERIFIED": True,
     "ALLOW_LOGIN_WITH_SECONDARY_EMAIL": False,
 }
 
-# User & Authentication
-
-AUTH_USER_MODEL = "authentication.User"
 LOGIN_REDIRECT_URL = reverse_lazy("admin:index")
 LOGOUT_REDIRECT_URL = reverse_lazy("admin:login")
 
@@ -159,15 +164,8 @@ SOCIAL_AUTH_UUID_LENGTH = 4
 SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = False
 SOCIAL_AUTH_SLUGIFY_USERNAMES = True
 SOCIAL_AUTH_URL_NAMESPACE = "social"
-AUTHENTICATION_BACKENDS = (
-    "social_core.backends.google.GoogleOAuth2",
-    "social_core.backends.email.EmailAuth",
-    "graphql_jwt.backends.JSONWebTokenBackend",
-    "django.contrib.auth.backends.ModelBackend",
-)
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get("GOOGLE_OAUTH2_CLIENT_ID")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("GOOGLE_OAUTH2_SECRET")
-
 SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.social_details",
     "social_core.pipeline.social_auth.social_uid",
