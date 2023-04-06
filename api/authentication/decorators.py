@@ -19,7 +19,7 @@ def token_auth_email(f):
 
         user = authenticate(
             request=context,
-            email=email,
+            username=email,
             password=password,
         )
         print(user)

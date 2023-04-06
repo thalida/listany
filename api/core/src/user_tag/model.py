@@ -1,5 +1,5 @@
-import uuid
 from django.db import models
+import uuid
 
 
 class UserTag(models.Model):
@@ -20,6 +20,9 @@ class UserTag(models.Model):
     )
     color = models.CharField(max_length=7, blank=True)
     description = models.TextField(blank=True)
+
+    is_hidden = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.tag}"

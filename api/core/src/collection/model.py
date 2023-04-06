@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 import uuid
 
-from authentication.models.user import User
+from authentication.models import User
 
 
 class Collection(models.Model):
@@ -35,6 +35,8 @@ class Collection(models.Model):
         blank=True,
     )
     is_public = models.BooleanField(default=True)
+    is_hidden = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.title}'
