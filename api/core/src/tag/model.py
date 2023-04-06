@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 import uuid
 
@@ -20,6 +19,9 @@ class Tag(models.Model):
 
     slug = models.SlugField(max_length=2000, editable=False)
     label = models.CharField(max_length=2000)
+
+    is_hidden = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
 
     class Meta:
         constraints = [

@@ -1,12 +1,13 @@
 import graphene
 from authentication.schema import AuthQuery, AuthMutation
+from core.schema import CoreQuery, CoreMutation
 
 
-class Query(AuthQuery, graphene.ObjectType):
+class Query(AuthQuery, CoreQuery, graphene.ObjectType):
     pass
 
 
-class Mutation(AuthMutation, graphene.ObjectType):
+class Mutation(AuthMutation, CoreMutation, graphene.ObjectType):
     pass
 
 
