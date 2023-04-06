@@ -11,6 +11,10 @@ from unfold.decorators import display
 from authentication.models import User
 
 
+admin.site.unregister(Group)
+admin.site.unregister(UserSocialAuth)
+
+
 @admin.register(User)
 class UserAdmin(BaseUserAdmin, ModelAdmin):
     form = UserChangeForm
@@ -25,15 +29,9 @@ class UserAdmin(BaseUserAdmin, ModelAdmin):
         return ", ".join([group.name for group in obj.groups.all()])
 
 
-admin.site.unregister(Group)
-
-
 @admin.register(Group)
 class GroupAdmin(BaseGroupAdmin, ModelAdmin):
     pass
-
-
-admin.site.unregister(UserSocialAuth)
 
 
 @admin.register(UserSocialAuth)
