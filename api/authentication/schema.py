@@ -1,34 +1,39 @@
-from django.db import IntegrityError
 import graphene
-from graphene_django.types import DjangoObjectType
 import graphql_jwt
-from graphql_jwt.decorators import login_required
-from graphql_jwt.mixins import ObtainJSONWebTokenMixin
-from graph_auth.models import UserStatus
+from django.db import IntegrityError
 from graph_auth.constants import Messages
 from graph_auth.exceptions import EmailAlreadyInUse
+from graph_auth.models import UserStatus
+from graph_auth.schema import (
+    PasswordReset,
+    Register,
+    ResendActivationEmail,
+    SendPasswordResetEmail,
+    VerifyAccount,
+)
 from graph_auth.signals import user_registered
-from graph_auth.schema import Register, VerifyAccount, ResendActivationEmail, SendPasswordResetEmail, PasswordReset
-from social_django.utils import load_strategy, load_backend
+from graphene_django.types import DjangoObjectType
+from graphql_jwt.decorators import login_required
+from graphql_jwt.mixins import ObtainJSONWebTokenMixin
+from social_django.utils import load_backend, load_strategy
 from social_django.views import _do_login
 
-
 from api.permissions import IsAuthenticated
-from authentication.models import User
 from authentication.decorators import token_auth_email
+from authentication.models import User
 
 
 class UserNode(IsAuthenticated, DjangoObjectType):
-    class Meta():
+    class Meta:
         model = User
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node,)
         filter_fields = [
             "uid",
             "email",
             "username",
             "is_active",
             "is_staff",
-            "is_superuser"
+            "is_superuser",
         ]
         exclude = ["password"]
 
@@ -45,11 +50,9 @@ class RegisterBySocial(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(cls, root, info, **input):
         social_strategy = load_strategy()
         social_backend = load_backend(
-            social_strategy,
-            input['social_backend'],
-            redirect_uri=None
+            social_strategy, input["social_backend"], redirect_uri=None
         )
-        user = social_backend.do_auth(input['access_token'])
+        user = social_backend.do_auth(input["access_token"])
         _do_login(social_backend, user, user.social_user)
         payload = graphql_jwt.utils.jwt_payload(user)
         token = graphql_jwt.utils.jwt_encode(payload)
@@ -63,16 +66,9 @@ class RegisterByEmail(Register):
 
     @classmethod
     def login_on_register(cls, root, info, user, **kwargs):
-        info.context.POST = {
-            'email': user.email,
-            'password': user.password
-        }
+        info.context.POST = {"email": user.email, "password": user.password}
         strategy = load_strategy(info.context)
-        backend = load_backend(
-            strategy,
-            'email',
-            redirect_uri=None
-        )
+        backend = load_backend(strategy, "email", redirect_uri=None)
         _do_login(backend, user, user)
 
         payload = graphql_jwt.utils.jwt_payload(user)
@@ -103,12 +99,7 @@ class RegisterByEmail(Register):
             user_registered.send(sender=cls, user=user)
             token = cls.login_on_register(root, info, user, **kwargs)
 
-            return cls(
-                success=True,
-                errors=None,
-                user=user,
-                token=token
-            )
+            return cls(success=True, errors=None, user=user, token=token)
         except IntegrityError:
             return cls(
                 success=False,
@@ -123,7 +114,7 @@ class RegisterByEmail(Register):
                 user=None,
                 token=None,
             )
-        except Exception as e:
+        except Exception:
             return cls(
                 success=False,
                 errors=[Messages.SERVER_ERROR],
@@ -148,11 +139,7 @@ class TokenAuth(ObtainJSONWebTokenMixin, graphene.ClientIDMutation):
     def resolve(cls, root, info, **kwargs):
         user = info.context.user
         strategy = load_strategy(info.context)
-        backend = load_backend(
-            strategy,
-            'email',
-            redirect_uri=None
-        )
+        backend = load_backend(strategy, "email", redirect_uri=None)
         _do_login(backend, user, user)
         return cls()
 

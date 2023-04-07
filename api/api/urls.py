@@ -23,13 +23,10 @@ from graphene_django.views import GraphQLView
 admin.autodiscover()
 
 urlpatterns = [
-    path('social/', include('social_django.urls', namespace='social')),
-    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True))),
-    path('', admin.site.urls),
+    path("social/", include("social_django.urls", namespace="social")),
+    path("graphql/", csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    path("", admin.site.urls),
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(
-        settings.MEDIA_URL,
-        document_root=settings.MEDIA_ROOT
-    )
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

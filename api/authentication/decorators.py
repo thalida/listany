@@ -1,10 +1,16 @@
 from functools import wraps
-from graphene.utils.thenables import maybe_thenable
-from graphql_jwt.decorators import setup_jwt_cookie, refresh_expiration, csrf_rotation, on_token_auth_resolve
-from graphql_jwt.exceptions import JSONWebTokenError
+
 import graphql_jwt.signals
 from django.contrib.auth import authenticate, get_user_model
 from django.utils.translation import gettext as _
+from graphene.utils.thenables import maybe_thenable
+from graphql_jwt.decorators import (
+    csrf_rotation,
+    on_token_auth_resolve,
+    refresh_expiration,
+    setup_jwt_cookie,
+)
+from graphql_jwt.exceptions import JSONWebTokenError
 
 
 def token_auth_email(f):
@@ -32,11 +38,7 @@ def token_auth_email(f):
             context.user = user
 
         result = f(cls, root, info, **kwargs)
-        graphql_jwt.signals.token_issued.send(
-            sender=cls,
-            request=context,
-            user=user
-        )
+        graphql_jwt.signals.token_issued.send(sender=cls, request=context, user=user)
         return maybe_thenable((context, user, result), on_token_auth_resolve)
 
     return wrapper

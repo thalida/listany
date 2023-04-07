@@ -1,5 +1,5 @@
-from django.db import models
 import graphene
+from django.db import models
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
@@ -9,7 +9,7 @@ from core.src.collection.model import Collection
 class CollectionNode(DjangoObjectType):
     class Meta:
         model = Collection
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node,)
         fields = [
             "uid",
             "created_at",
@@ -44,9 +44,7 @@ class CollectionNode(DjangoObjectType):
             return queryset.filter(isnt_deleted & is_public)
 
         is_owner = models.Q(created_by=info.context.user)
-        return queryset.filter(
-            isnt_deleted & (is_public | is_owner)
-        )
+        return queryset.filter(isnt_deleted & (is_public | is_owner))
 
 
 class CreateCollection(graphene.relay.ClientIDMutation):
@@ -61,10 +59,7 @@ class CreateCollection(graphene.relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        collection = Collection.objects.create(
-            created_by=info.context.user,
-            **input
-        )
+        collection = Collection.objects.create(created_by=info.context.user, **input)
 
         return CreateCollection(collection=collection)
 

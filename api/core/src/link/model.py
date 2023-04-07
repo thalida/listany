@@ -1,19 +1,16 @@
-from django.db import models
 import uuid
+
+from django.db import models
 
 
 class Link(models.Model):
-    uid = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False
-    )
+    uid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
-        'authentication.User',
+        "authentication.User",
         on_delete=models.CASCADE,
-        related_name='links',
+        related_name="links",
     )
 
     url = models.URLField(max_length=2000)
@@ -24,4 +21,4 @@ class Link(models.Model):
     is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.title} ({self.url})'
+        return f"{self.title} ({self.url})"

@@ -17,12 +17,12 @@ class TagAdmin(ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser:
-            form.base_fields['created_by'].queryset = (
-                User.objects.filter(pk=request.user.pk)
+            form.base_fields["created_by"].queryset = User.objects.filter(
+                pk=request.user.pk
             )
         return form
 
     def get_changeform_initial_data(self, request):
         return {
-            'created_by': request.user.pk,
+            "created_by": request.user.pk,
         }

@@ -1,5 +1,5 @@
-from django.db import models
 import graphene
+from django.db import models
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
@@ -9,7 +9,7 @@ from core.src.collection_link.model import CollectionLink
 class CollectionLinkNode(DjangoObjectType):
     class Meta:
         model = CollectionLink
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node,)
         fields = [
             "created_at",
             "updated_at",
@@ -34,13 +34,11 @@ class CollectionLinkNode(DjangoObjectType):
         if info.context.user.is_anonymous:
             return queryset.filter(isnt_deleted & is_collection_public)
 
-        is_collection_owner = models.Q(
-            collection__created_by=info.context.user
+        is_collection_owner = models.Q(collection__created_by=info.context.user)
+        is_owner = models.Q(created_by=info.context.user)
+        return queryset.filter(
+            isnt_deleted & (is_collection_public | is_collection_owner | is_owner)
         )
-        is_owner = models.Q(
-            created_by=info.context.user
-        )
-        return queryset.filter(isnt_deleted & (is_collection_public | is_collection_owner | is_owner))
 
 
 class CreateCollectionLink(graphene.relay.ClientIDMutation):
@@ -54,8 +52,7 @@ class CreateCollectionLink(graphene.relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
         collection_link = CollectionLink.objects.create(
-            created_by=info.context.user,
-            **input
+            created_by=info.context.user, **input
         )
 
         return CreateCollectionLink(collection_link=collection_link)

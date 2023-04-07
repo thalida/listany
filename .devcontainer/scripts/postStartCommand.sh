@@ -1,3 +1,3 @@
 #!/bin/bash
 
-# chmod -R +x /workspaces/listany/scripts
+chmod -R +x /workspaces/listany/scripts

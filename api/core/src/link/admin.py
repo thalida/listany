@@ -18,6 +18,4 @@ class LinkAdmin(ModelAdmin):
         if request.user.is_superuser:
             return qs
 
-        return qs.filter(
-            collections__created_by=request.user
-        ).distinct()
+        return qs.filter(collections__created_by=request.user).distinct()
