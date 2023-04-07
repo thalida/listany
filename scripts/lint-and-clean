@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+printf "Linting and cleaning...\n"
+cd /workspaces/listany/api
+
+printf "\nRunning pylint...\n"
+poetry run pylint --load-plugins pylint_django --django-settings-module=api.settings *.py
+
+printf "\nRunning black...\n"
+poetry run black .
+
+printf "\nRunning isort...\n"
+poetry run isort .
+
+printf "\nRunning flake8...\n"
+poetry run flake8 .
+
+printf "\nDONE\n"
