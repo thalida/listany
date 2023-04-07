@@ -13,7 +13,7 @@ class CoreQuery(
     LinkQuery,
     TagQuery,
     UserTagQuery,
-    graphene.ObjectType
+    graphene.ObjectType,
 ):
     pass
 
@@ -24,6 +24,6 @@ class CoreMutation(
     LinkMutations,
     TagMutations,
     UserTagMutations,
-    graphene.ObjectType
+    graphene.ObjectType,
 ):
     pass

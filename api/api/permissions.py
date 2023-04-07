@@ -2,11 +2,10 @@ import functools
 
 
 def login_required(func):
-
     @functools.wraps(func)
     def wrapper(self, root, info, **kwargs):
         if info.context.user.is_anonymous:
-            raise Exception('403: Unauthorized')
+            raise Exception("403: Unauthorized")
         res = func(self, root, info, **kwargs)
         return res
 

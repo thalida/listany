@@ -1,5 +1,5 @@
-from django.db import models
 import graphene
+from django.db import models
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
@@ -9,7 +9,7 @@ from core.src.link.model import Link
 class LinkNode(DjangoObjectType):
     class Meta:
         model = Link
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node,)
         fields = [
             "uid",
             "created_at",

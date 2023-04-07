@@ -1,5 +1,5 @@
-from django.db import models
 import graphene
+from django.db import models
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
@@ -9,7 +9,7 @@ from core.src.user_tag.model import UserTag
 class UserTagNode(DjangoObjectType):
     class Meta:
         model = UserTag
-        interfaces = (graphene.relay.Node, )
+        interfaces = (graphene.relay.Node,)
         fields = [
             "uid",
             "created_at",
@@ -47,10 +47,7 @@ class CreateUserTag(graphene.relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        user_tag = UserTag.objects.create(
-            user=info.context.user,
-            **input
-        )
+        user_tag = UserTag.objects.create(user=info.context.user, **input)
 
         return CreateUserTag(user_tag=user_tag)
 

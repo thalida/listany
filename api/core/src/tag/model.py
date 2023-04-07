@@ -1,20 +1,15 @@
+import uuid
+
 from django.db import models
 from django.template.defaultfilters import slugify
-import uuid
 
 
 class Tag(models.Model):
-    uid = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False
-    )
+    uid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
-        'authentication.User',
-        on_delete=models.CASCADE,
-        related_name='tags'
+        "authentication.User", on_delete=models.CASCADE, related_name="tags"
     )
 
     slug = models.SlugField(max_length=2000, editable=False)
@@ -25,14 +20,11 @@ class Tag(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=['slug'],
-                name='unique_slug'
-            ),
+            models.UniqueConstraint(fields=["slug"], name="unique_slug"),
         ]
 
     def __str__(self):
-        return f'{self.label}'
+        return f"{self.label}"
 
     def clean(self):
         self.label = self.label.strip().lower()

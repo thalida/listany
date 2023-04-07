@@ -1,6 +1,7 @@
 import graphene
-from authentication.schema import AuthQuery, AuthMutation
-from core.schema import CoreQuery, CoreMutation
+
+from authentication.schema import AuthMutation, AuthQuery
+from core.schema import CoreMutation, CoreQuery
 
 
 class Query(AuthQuery, CoreQuery, graphene.ObjectType):

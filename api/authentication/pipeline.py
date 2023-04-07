@@ -1,4 +1,5 @@
 import random
+
 from django.contrib.auth.models import Group
 
 USERNAME_COLORS = [
@@ -31,7 +32,7 @@ USERNAME_COLORS = [
     "Plum",
     "Tan",
     "Sky Blue",
-    "Mint Green"
+    "Mint Green",
 ]
 
 USERNAME_MYTICAL_ANIMALS = [
@@ -63,5 +64,5 @@ def get_username(strategy, details, user=None, *args, **kwargs):
 
 
 def assign_default_groups(backend, user, response, *args, **kwargs):
-    basic_user_group = Group.objects.get(name='basic_user')
+    basic_user_group = Group.objects.get(name="basic_user")
     basic_user_group.user_set.add(user)

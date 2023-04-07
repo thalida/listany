@@ -10,13 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-from django.utils.translation import gettext_lazy as _
-from django.urls import reverse_lazy
-from django.templatetags.static import static
 import os
 from pathlib import Path
 
 import dj_database_url
+from django.templatetags.static import static
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -120,7 +120,7 @@ WSGI_APPLICATION = "api.wsgi.application"
 DATABASES = {
     "default": dj_database_url.config(
         default="postgresql://postgres:postgres@localhost:5432/postgres",
-        conn_max_age=600
+        conn_max_age=600,
     )
 }
 
@@ -128,10 +128,12 @@ DATABASES = {
 # GraphQL
 
 GRAPHENE = {
-    "SCHEMA": "api.schema.schema",
     "MIDDLEWARE": [
         "graphql_jwt.middleware.JSONWebTokenMiddleware",
     ],
+    "SCHEMA": "api.schema.schema",
+    "SCHEMA_OUTPUT": "graphql-schema.json",
+    "SCHEMA_INDENT": None,
 }
 
 GRAPHQL_JWT = {
@@ -283,7 +285,9 @@ UNFOLD = {
                 },
                 {
                     "title": _("All Social Accounts"),
-                    "link": reverse_lazy("admin:social_django_usersocialauth_changelist"),
+                    "link": reverse_lazy(
+                        "admin:social_django_usersocialauth_changelist"
+                    ),
                 },
             ],
         },

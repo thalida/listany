@@ -51,6 +51,8 @@
 				"sleistner.vscode-fileutils",
 				"Vue.vscode-typescript-vue-plugin",
 				"Vue.volar",
+				"ms-python.isort",
+				"ms-python.black-formatter"
 			]
 		}
 	},

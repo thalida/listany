@@ -31,7 +31,7 @@ class CollectionLinkAdmin(ModelAdmin):
     list_filter_submit = True
 
     formfield_overrides = {
-        models.TextField: {'widget': WysiwygWidget},
+        models.TextField: {"widget": WysiwygWidget},
     }
 
     def get_queryset(self, request):
@@ -39,24 +39,22 @@ class CollectionLinkAdmin(ModelAdmin):
         if request.user.is_superuser:
             return qs
 
-        return qs.filter(
-            collection__created_by=request.user
-        ).distinct()
+        return qs.filter(collection__created_by=request.user).distinct()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser:
-            form.base_fields['created_by'].queryset = (
-                User.objects.filter(pk=request.user.pk)
+            form.base_fields["created_by"].queryset = User.objects.filter(
+                pk=request.user.pk
             )
-            form.base_fields['collection'].queryset = (
-                Collection.objects.filter(created_by=request.user.pk)
+            form.base_fields["collection"].queryset = Collection.objects.filter(
+                created_by=request.user.pk
             )
         return form
 
     def get_changeform_initial_data(self, request):
         return {
-            'created_by': request.user.pk,
+            "created_by": request.user.pk,
         }
 
     @display(header=True, description=_("Link"), ordering="link")
@@ -69,7 +67,10 @@ class CollectionLinkAdmin(ModelAdmin):
 
     @display(description=_(""))
     def open_link(self, obj):
-        return format_html("<a href='{url}' target='_blank'><span class='material-symbols-outlined md-18 mr-3'>open_in_new</span></a>", url=obj.link.url)
+        return format_html(
+            "<a href='{url}' target='_blank'><span class='material-symbols-outlined md-18 mr-3'>open_in_new</span></a>",
+            url=obj.link.url,
+        )
 
     @admin.action(description=_(""))
     def noop_action(self, request, obj):

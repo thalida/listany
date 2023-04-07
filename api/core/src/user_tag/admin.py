@@ -13,11 +13,7 @@ from core.src.user_tag.model import UserTag
 
 @admin.register(UserTag)
 class UserTagAdmin(ModelAdmin):
-    list_display = (
-        "tag_with_color",
-        "description",
-        "show_collections"
-    )
+    list_display = ("tag_with_color", "description", "show_collections")
     actions = ["noop_action"]
 
     @admin.action(description=_(""))
@@ -26,18 +22,26 @@ class UserTagAdmin(ModelAdmin):
 
     @display(description=_("Tag"), label=True)
     def tag_with_color(self, obj):
-        return format_html("<span style='color: {color}'>{tag}</span>", color=obj.color, tag=obj.tag.label)
+        return format_html(
+            "<span style='color: {color}'>{tag}</span>",
+            color=obj.color,
+            tag=obj.tag.label,
+        )
 
     @display(description=_("Collections"))
     def show_collections(self, obj):
         collections = [
             {
                 "url": reverse("admin:core_collection_change", args=[collection.pk]),
-                "title": collection.title
-            } for collection in obj.collections.all()
+                "title": collection.title,
+            }
+            for collection in obj.collections.all()
         ]
         html_arr = [
-            "<a href='{url}'>{title}</a>".format(url=collection["url"], title=collection["title"]) for collection in collections
+            "<a href='{url}'>{title}</a>".format(
+                url=collection["url"], title=collection["title"]
+            )
+            for collection in collections
         ]
         return format_html(", ".join(html_arr))
 
@@ -46,21 +50,17 @@ class UserTagAdmin(ModelAdmin):
         if request.user.is_superuser:
             return qs
 
-        return qs.filter(
-            Q(user=request.user.pk)
-        ).distinct()
+        return qs.filter(Q(user=request.user.pk)).distinct()
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if not request.user.is_superuser:
-            form.base_fields['user'].queryset = (
-                User.objects.filter(pk=request.user.pk)
-            )
+            form.base_fields["user"].queryset = User.objects.filter(pk=request.user.pk)
 
-        form.base_fields['color'].widget = TextInput(attrs={'type': 'color'})
+        form.base_fields["color"].widget = TextInput(attrs={"type": "color"})
         return form
 
     def get_changeform_initial_data(self, request):
         return {
-            'user': request.user.pk,
+            "user": request.user.pk,
         }
